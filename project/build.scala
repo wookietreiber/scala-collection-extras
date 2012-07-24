@@ -6,7 +6,7 @@ object Util extends Build {
     settings = Defaults.defaultSettings ++ Seq (
       organization         := "com.github.par-merge-sort-shuffle",
       version              := "0.1.0-SNAPSHOT",
-      scalaVersion         := "2.10.0-M5",
+      scalaVersion         := "2.9.2",
       crossScalaVersions   := Seq (
         "2.9.0", "2.9.0-1",
         "2.9.1", "2.9.1-1",
