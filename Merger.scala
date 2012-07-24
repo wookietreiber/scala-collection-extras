@@ -1,7 +1,5 @@
 package scalax.util
 
-import language.higherKinds
-
 trait Merger[M[_]] {
   def merge[A:Ordering](xs: M[A], y: A): M[A]
   def mergeAll[A:Ordering](xs: M[A], ys: M[A]): M[A]

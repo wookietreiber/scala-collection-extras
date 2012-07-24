@@ -1,7 +1,5 @@
 package scalax.util
 
-import language.higherKinds
-
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import scala.collection.generic.CanBuildFrom

@@ -1,7 +1,5 @@
 package scalax.util
 
-import language.higherKinds
-
 trait Sorter[M[_]] extends Merger[M] {
   def sortWith[A](xs: M[A])(lt: (A,A) ⇒ Boolean): M[A] = sort(xs)(Ordering fromLessThan lt)
   def sortBy[A,B:Ordering](xs: M[A])(f: A ⇒ B): M[A] = sort(xs)(implicitly[Ordering[B]] on f)

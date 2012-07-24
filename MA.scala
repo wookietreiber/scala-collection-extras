@@ -1,7 +1,5 @@
 package scalax.util
 
-import language.higherKinds
-
 trait MA[M[_],A] {
   val value: M[A]
 
