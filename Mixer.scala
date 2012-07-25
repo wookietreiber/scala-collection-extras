@@ -1,57 +1,41 @@
-package scalax.util
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                                               *
+ *  This file is part of the project 'scala-collection-extras'.                                  *
+ *                                                                                               *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                                               *
+ *  This project is free software. It comes without any warranty, to the extent permitted by     *
+ *  applicable law. You can redistribute it and/or modify it under the terms of the Do What The  *
+ *  Fuck You Want To Public License, Version 2, as published by Sam Hocevar.                     *
+ *                                                                                               *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                                               *
+ *  See http://sam.zoy.org/wtfpl/COPYING for more details.                                       *
+ *                                                                                               *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+
+package scalay.collection
 
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
-import scala.collection.generic.CanBuildFrom
-import scala.collection.parallel.immutable.ParVector
-import scala.util.Random._
+import scala.util.Random
 
-trait Mixer[M[_]] extends Sorter[M] {
+trait Mixer[M[_]] {
   def shuffle[A](xs: M[A]): M[A]
+  def choose[A](xs: M[A], n: Int): M[A]
+  def choosePair[A](xs: M[A]): Pair[A,A]
 }
 
 trait MixerLow {
-  implicit def GenTraversableMixer[CC[X] <: GenTraversable[X]]: Mixer[CC] = new Mixer[CC] {
-    override def merge[A:Ordering](xs: CC[A], y: A) = {
-      val (ps,ss) = xs.partition(implicitly[Ordering[A]].lt(_,y))
-      val builder = xs.genericBuilder[A]
-      builder ++= ps.seq
-      builder  += y
-      builder ++= ss.seq
-      builder.result.asInstanceOf[CC[A]]
+  implicit def GenTraversableMixer[CC[X] <: GenTraversable[X]](implicit sorter: Sorter[CC]): Mixer[CC] = new Mixer[CC] {
+    override def shuffle[A](xs: CC[A]): CC[A] = sorter.sortBy(xs) { _ ⇒ Random.nextLong }
+    override def choose[A](xs: CC[A], n: Int): CC[A] = shuffle(xs).take(n).asInstanceOf[CC[A]]
+    override def choosePair[A](xs: CC[A]): Pair[A,A] = {
+      val two = choose(xs, 2).toIndexedSeq
+      Pair(two(0), two(1))
     }
-
-    @tailrec
-    override def mergeAll[A:Ordering](xs: CC[A], ys: CC[A]) =
-      if (ys.isEmpty) xs else mergeAll(merge(xs,ys.head), ys.tail.asInstanceOf[CC[A]])
-
-    override def sort[A:Ordering](xs: CC[A]) =
-      xs.aggregate(xs.genericBuilder[A].result.asInstanceOf[CC[A]])(merge, mergeAll)
-
-    override def shuffle[A](xs: CC[A]): CC[A] =
-      sortBy(xs) { _ ⇒ nextLong }
   }
 }
 
-object Mixer extends MixerLow {
-  implicit val ParVectorMixer: Mixer[ParVector] = new Mixer[ParVector] {
-    override def merge[A:Ordering](xs: ParVector[A], y: A): ParVector[A] = {
-      val (ps,ss) = xs.partition(implicitly[Ordering[A]].lt(_,y))
-      val builder = xs.genericBuilder[A]
-      builder ++= ps.seq
-      builder  += y
-      builder ++= ss.seq
-      builder.result
-    }
-
-    @tailrec
-    override def mergeAll[A:Ordering](xs: ParVector[A], ys: ParVector[A]): ParVector[A] =
-      if (ys.isEmpty) xs else mergeAll(merge(xs,ys.head), ys.tail)
-
-    override def sort[A:Ordering](xs: ParVector[A]): ParVector[A] =
-      xs.aggregate(xs.companion.empty[A])(merge, mergeAll)
-
-    override def shuffle[A](xs: ParVector[A]): ParVector[A] =
-      sortBy(xs) { _ ⇒ nextLong }
-  }
-}
+object Mixer extends MixerLow

@@ -15,10 +15,27 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-package scalay
+package scalay.collection
 
-package object collection {
-  implicit def toMA[M[_],A](ma: M[A]): MA[M,A] = new MA[M,A] {
-    val value = ma
+import scala.collection.GenTraversable
+
+trait Statistics[M[_]] {
+  def average[A:Numeric](xs: M[A]): Double
+  def averageBy[A,B:Numeric](xs: M[A])(f: A ⇒ B): Double
+}
+
+trait StatisticsLow {
+  implicit def GenTraversableStatistics[CC[X] <: GenTraversable[X]]: Statistics[CC] = new Statistics[CC] {
+    def average[A](xs: CC[A])(implicit num: Numeric[A]): Double = {
+      import num._
+      xs.aggregate(zero)(_ + _, _ + _).toDouble / xs.size
+    }
+
+    def averageBy[A,B](xs: CC[A])(f: A ⇒ B)(implicit num: Numeric[B]): Double = {
+      import num._
+      xs.aggregate(zero)(_ + f(_), _ + _).toDouble / xs.size
+    }
   }
 }
+
+object Statistics extends StatisticsLow

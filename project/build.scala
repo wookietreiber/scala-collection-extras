@@ -1,13 +1,15 @@
 import sbt._
 import Keys._
 
-object Util extends Build {
-  lazy val root = Project ( "par-merge-sort-shuffle", file ("."),
+object Extras extends Build {
+  lazy val root = Project (
+    id       = "collection-extras",
+    base     = file ("."),
     settings = Defaults.defaultSettings ++ Seq (
-      organization         := "com.github.par-merge-sort-shuffle",
-      version              := "0.1.0-SNAPSHOT",
-      scalaVersion         := "2.9.2",
-      crossScalaVersions   := Seq (
+      organization       := "com.github.scala-collection-extras",
+      version            := "0.1.0-SNAPSHOT",
+      scalaVersion       := "2.9.2",
+      crossScalaVersions := Seq (
         "2.9.0", "2.9.0-1",
         "2.9.1", "2.9.1-1",
         "2.9.2",
@@ -21,7 +23,7 @@ object Util extends Build {
       },
       initialCommands in (Compile, consoleQuick) <<= initialCommands in Compile,
       initialCommands in Compile in console += """
-        import scalax.util._
+        import scalay.collection._
       """
     )
   )
