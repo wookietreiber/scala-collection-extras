@@ -46,10 +46,32 @@ trait MA[M[_],A] {
   def choosePair(implicit mixer: Mixer[M]): Pair[A,A] =
     mixer.choosePair(value)
 
+  // -----------------------------------------------------------------------------------------------
+  // statistical
+  // -----------------------------------------------------------------------------------------------
+
+  def arithmeticMean(implicit stats: Statistics[M], num: Numeric[A]): Double =
+    stats.arithmeticMean(value)
+
+  def arithmeticMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], num: Numeric[B]): Double =
+    stats.arithmeticMeanBy(value)(f)
+
   def average(implicit stats: Statistics[M], num: Numeric[A]): Double =
-    stats.average(value)
+    stats.arithmeticMean(value)
 
   def averageBy[B](f: A ⇒ B)(implicit stats: Statistics[M], num: Numeric[B]): Double =
-    stats.averageBy(value)(f)
+    stats.arithmeticMeanBy(value)(f)
+
+  def geometricMean(implicit stats: Statistics[M], num: Numeric[A]): Double =
+    stats.geometricMean(value)
+
+  def geometricMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], num: Numeric[B]): Double =
+    stats.geometricMeanBy(value)(f)
+
+  def harmonicMean(implicit stats: Statistics[M], int: Integral[A]): Double =
+    stats.harmonicMean(value)
+
+  def harmonicMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], int: Integral[B]): Double =
+    stats.harmonicMeanBy(value)(f)
 
 }
