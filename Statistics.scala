@@ -28,6 +28,9 @@ trait Statistics[M[_]] {
 
   def harmonicMean[A:Integral](xs: M[A]): Double
   def harmonicMeanBy[A,B:Integral](xs: M[A])(f: A ⇒ B): Double
+
+  def quadraticMean[A:Numeric](xs: M[A]): Double
+  def quadraticMeanBy[A,B:Numeric](xs: M[A])(f: A ⇒ B): Double
 }
 
 trait StatisticsLow {
@@ -63,6 +66,18 @@ trait StatisticsLow {
       import int._
       val acc = xs.aggregate(zero)(_ + one / f(_), _ + _).toDouble
       xs.size / acc
+    }
+
+    def quadraticMean[A](xs: CC[A])(implicit num: Numeric[A]): Double = {
+      import num._
+      val acc = xs.aggregate(zero)( (a,b) ⇒ a + b*b, _ + _).toDouble
+      math.sqrt(acc / xs.size)
+    }
+
+    def quadraticMeanBy[A,B](xs: CC[A])(f: A ⇒ B)(implicit num: Numeric[B]): Double = {
+      import num._
+      val acc = xs.aggregate(zero)((acc,a) ⇒ { val b = f(a) ; b*b }, _ + _).toDouble
+      math.sqrt(acc / xs.size)
     }
   }
 }

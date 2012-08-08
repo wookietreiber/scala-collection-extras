@@ -74,4 +74,10 @@ trait MA[M[_],A] {
   def harmonicMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], int: Integral[B]): Double =
     stats.harmonicMeanBy(value)(f)
 
+  def quadraticMean(implicit stats: Statistics[M], num: Numeric[A]): Double =
+    stats.quadraticMean(value)
+
+  def quadraticMean[B](f: A ⇒ B)(implicit stats: Statistics[M], num: Numeric[B]): Double =
+    stats.quadraticMeanBy(value)(f)
+
 }
