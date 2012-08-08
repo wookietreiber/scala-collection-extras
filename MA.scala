@@ -80,4 +80,10 @@ trait MA[M[_],A] {
   def quadraticMean[B](f: A ⇒ B)(implicit stats: Statistics[M], num: Numeric[B]): Double =
     stats.quadraticMeanBy(value)(f)
 
+  def median(implicit stats: Statistics[M], sorter: Sorter[M], int: Integral[A]): A =
+    stats.median(value)
+
+  def medianBy[B](f: A ⇒ B)(implicit stats: Statistics[M], sorter: Sorter[M], int: Integral[B]): B =
+    stats.medianBy(value)(f)
+
 }

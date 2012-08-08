@@ -31,6 +31,9 @@ trait Statistics[M[_]] {
 
   def quadraticMean[A:Numeric](xs: M[A]): Double
   def quadraticMeanBy[A,B:Numeric](xs: M[A])(f: A ⇒ B): Double
+
+  def median[A](xs: M[A])(implicit sorter: Sorter[M], int: Integral[A]): A
+  def medianBy[A,B](xs: M[A])(f: A ⇒ B)(implicit sorter: Sorter[M], int: Integral[B]): B
 }
 
 trait StatisticsLow {
@@ -78,6 +81,30 @@ trait StatisticsLow {
       import num._
       val acc = xs.aggregate(zero)((acc,a) ⇒ { val b = f(a) ; b*b }, _ + _).toDouble
       math.sqrt(acc / xs.size)
+    }
+
+    def median[A](xs: CC[A])(implicit sorter: Sorter[CC], int: Integral[A]): A = {
+      import int._
+
+      val sorted = sorter.sort(xs).toIndexedSeq
+      val n = sorted.size
+
+      if (n % 2 == 0)
+        (sorted(n/2) + sorted(n/2 + 1)) / (fromInt(2))
+      else
+        sorted((n+1)/2)
+    }
+
+    def medianBy[A,B](xs: CC[A])(f: A ⇒ B)(implicit sorter: Sorter[CC], int: Integral[B]): B = {
+      import int._
+
+      val sorted = sorter.sortBy(xs)(f).toIndexedSeq
+      val n = sorted.size
+
+      if (n % 2 == 0)
+        (f(sorted(n/2)) + f(sorted(n/2 + 1))) / (fromInt(2))
+      else
+        f(sorted((n+1)/2))
     }
   }
 }
