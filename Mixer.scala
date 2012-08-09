@@ -29,7 +29,11 @@ trait Mixer[M[_]] {
 
 trait MixerLow0 {
   implicit def GenTraversableMixer[CC[X] <: GenTraversable[X]](implicit sorter: Sorter[CC]): Mixer[CC] = new Mixer[CC] {
-    override def shuffle[A](xs: CC[A]): CC[A] = sorter.sortBy(xs) { _ ⇒ Random.nextLong }
+    override def shuffle[A](xs: CC[A]): CC[A] = {
+      val withRandom: CC[(A,Long)] = xs.map(x ⇒ x → Random.nextLong).asInstanceOf[CC[(A,Long)]]
+      val shuffled = sorter.sortBy(withRandom) { _._2 } map { _._1 }
+      shuffled.asInstanceOf[CC[A]]
+    }
     override def choose[A](xs: CC[A], n: Int): CC[A] = shuffle(xs).take(n).asInstanceOf[CC[A]]
     override def choosePair[A](xs: CC[A]): Pair[A,A] = {
       val two = choose(xs, 2).toIndexedSeq
@@ -40,7 +44,10 @@ trait MixerLow0 {
 
 trait MixerLow extends MixerLow0 {
   implicit def SeqMixer[CC[X] <: Seq[X]]: Mixer[CC] = new Mixer[CC] {
-    override def shuffle[A](xs: CC[A]): CC[A] = xs.sortBy(_ ⇒ Random.nextLong).asInstanceOf[CC[A]]
+    override def shuffle[A](xs: CC[A]): CC[A] = {
+      val shuffled = xs.view map { x ⇒ x → Random.nextLong } sortBy { _._2 } map { _._1 }
+      shuffled.force.asInstanceOf[CC[A]]
+    }
     override def choose[A](xs: CC[A], n: Int): CC[A] = shuffle(xs).take(n).asInstanceOf[CC[A]]
     override def choosePair[A](xs: CC[A]): Pair[A,A] = {
       val two = choose(xs, 2).toIndexedSeq
