@@ -20,14 +20,14 @@ package scalay.collection
 import scala.collection.GenTraversable
 
 trait Statistics[M[_]] {
-  def arithmeticMean[A:Numeric](xs: M[A]): Double
-  def arithmeticMeanBy[A,B:Numeric](xs: M[A])(f: A ⇒ B): Double
+  def arithmeticMean[A:Integral](xs: M[A]): A
+  def arithmeticMeanBy[A,B:Integral](xs: M[A])(f: A ⇒ B): B
 
   def geometricMean[A:Numeric](xs: M[A]): Double
   def geometricMeanBy[A,B:Numeric](xs: M[A])(f: A ⇒ B): Double
 
-  def harmonicMean[A:Integral](xs: M[A]): Double
-  def harmonicMeanBy[A,B:Integral](xs: M[A])(f: A ⇒ B): Double
+  def harmonicMean[A:Integral](xs: M[A]): A
+  def harmonicMeanBy[A,B:Integral](xs: M[A])(f: A ⇒ B): B
 
   def quadraticMean[A:Numeric](xs: M[A]): Double
   def quadraticMeanBy[A,B:Numeric](xs: M[A])(f: A ⇒ B): Double
@@ -38,14 +38,14 @@ trait Statistics[M[_]] {
 
 trait StatisticsLow {
   implicit def GenTraversableStatistics[CC[X] <: GenTraversable[X]]: Statistics[CC] = new Statistics[CC] {
-    def arithmeticMean[A](xs: CC[A])(implicit num: Numeric[A]): Double = {
-      import num._
-      xs.aggregate(zero)(_ + _, _ + _).toDouble / xs.size
+    def arithmeticMean[A](xs: CC[A])(implicit int: Integral[A]): A = {
+      import int._
+      xs.aggregate(zero)(_ + _, _ + _) / fromInt(xs.size)
     }
 
-    def arithmeticMeanBy[A,B](xs: CC[A])(f: A ⇒ B)(implicit num: Numeric[B]): Double = {
-      import num._
-      xs.aggregate(zero)(_ + f(_), _ + _).toDouble / xs.size
+    def arithmeticMeanBy[A,B](xs: CC[A])(f: A ⇒ B)(implicit int: Integral[B]): B = {
+      import int._
+      xs.aggregate(zero)(_ + f(_), _ + _) / fromInt(xs.size)
     }
 
     def geometricMean[A](xs: CC[A])(implicit num: Numeric[A]): Double = {
@@ -59,16 +59,16 @@ trait StatisticsLow {
       math.pow(acc, 1. / xs.size)
     }
 
-    def harmonicMean[A](xs: CC[A])(implicit int: Integral[A]): Double = {
+    def harmonicMean[A](xs: CC[A])(implicit int: Integral[A]): A = {
       import int._
-      val acc = xs.aggregate(zero)(_ + one / _, _ + _).toDouble
-      xs.size / acc
+      val acc = xs.aggregate(zero)(_ + one / _, _ + _)
+      fromInt(xs.size) / acc
     }
 
-    def harmonicMeanBy[A,B](xs: CC[A])(f: A ⇒ B)(implicit int: Integral[B]): Double = {
+    def harmonicMeanBy[A,B](xs: CC[A])(f: A ⇒ B)(implicit int: Integral[B]): B = {
       import int._
-      val acc = xs.aggregate(zero)(_ + one / f(_), _ + _).toDouble
-      xs.size / acc
+      val acc = xs.aggregate(zero)(_ + one / f(_), _ + _)
+      fromInt(xs.size) / acc
     }
 
     def quadraticMean[A](xs: CC[A])(implicit num: Numeric[A]): Double = {

@@ -50,16 +50,16 @@ trait MA[M[_],A] {
   // statistical
   // -----------------------------------------------------------------------------------------------
 
-  def arithmeticMean(implicit stats: Statistics[M], num: Numeric[A]): Double =
+  def arithmeticMean(implicit stats: Statistics[M], int: Integral[A]): A =
     stats.arithmeticMean(value)
 
-  def arithmeticMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], num: Numeric[B]): Double =
+  def arithmeticMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], int: Integral[B]): B =
     stats.arithmeticMeanBy(value)(f)
 
-  def average(implicit stats: Statistics[M], num: Numeric[A]): Double =
+  def average(implicit stats: Statistics[M], int: Integral[A]): A =
     stats.arithmeticMean(value)
 
-  def averageBy[B](f: A ⇒ B)(implicit stats: Statistics[M], num: Numeric[B]): Double =
+  def averageBy[B](f: A ⇒ B)(implicit stats: Statistics[M], int: Integral[B]): B =
     stats.arithmeticMeanBy(value)(f)
 
   def geometricMean(implicit stats: Statistics[M], num: Numeric[A]): Double =
@@ -68,10 +68,10 @@ trait MA[M[_],A] {
   def geometricMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], num: Numeric[B]): Double =
     stats.geometricMeanBy(value)(f)
 
-  def harmonicMean(implicit stats: Statistics[M], int: Integral[A]): Double =
+  def harmonicMean(implicit stats: Statistics[M], int: Integral[A]): A =
     stats.harmonicMean(value)
 
-  def harmonicMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], int: Integral[B]): Double =
+  def harmonicMeanBy[B](f: A ⇒ B)(implicit stats: Statistics[M], int: Integral[B]): B =
     stats.harmonicMeanBy(value)(f)
 
   def quadraticMean(implicit stats: Statistics[M], num: Numeric[A]): Double =
