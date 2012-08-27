@@ -50,13 +50,13 @@ trait StatisticsLow {
 
     def geometricMean[A](xs: CC[A])(implicit num: Numeric[A]): Double = {
       import num._
-      math.pow(xs.product.toDouble, 1. / xs.size)
+      math.pow(xs.product.toDouble, 1.0 / xs.size)
     }
 
     def geometricMeanBy[A,B](xs: CC[A])(f: A ⇒ B)(implicit num: Numeric[B]): Double = {
       import num._
       val acc = xs.aggregate(one)(_ * f(_), _ * _).toDouble
-      math.pow(acc, 1. / xs.size)
+      math.pow(acc, 1.0 / xs.size)
     }
 
     def harmonicMean[A](xs: CC[A])(implicit int: Integral[A]): A = {
