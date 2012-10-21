@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                                               *
- *  This file is part of the project 'scala-collection-extras'.                                  *
+ *  This file is part of the project 'scala-extras'.                                             *
  *                                                                                               *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                                               *
@@ -19,7 +19,7 @@ package scalax
 
 import language.higherKinds
 
-package object collection {
+package object extras {
 
   implicit class MA[M[_],A](value: M[A]) {
 
