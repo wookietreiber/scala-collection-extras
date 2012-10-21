@@ -15,7 +15,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-package scalay.collection
+package scalax.collection
+
+import language.higherKinds
 
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
