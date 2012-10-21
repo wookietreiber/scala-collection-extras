@@ -28,10 +28,15 @@ trait Sorter[M[_]] {
   def sort[A:Ordering](xs: M[A]): M[A]
 }
 
-trait SorterLow {
+/* What we would need is a parallel collection that has the following properties:
+ *
+ * - cheap head/tail decomposition for mergeAll (like a list)
+ * - cheap insert for merge (using buckets of some sort)
+ *
+trait SorterLow0 {
   implicit def GenTraversableSorter[CC[X] <: GenTraversable[X]]: Sorter[CC] = new Sorter[CC] {
     def merge[A:Ordering](xs: CC[A], y: A): CC[A] = {
-      val (ps,ss) = xs.partition(implicitly[Ordering[A]].lt(_,y))
+      val (ps,ss) = xs.partition(implicitly[Ordering[A]].lt(_,y)) // could be insert as well
       val builder = xs.genericBuilder[A]
       builder ++= ps.seq
       builder  += y
@@ -45,6 +50,14 @@ trait SorterLow {
 
     override def sort[A:Ordering](xs: CC[A]): CC[A] =
       xs.aggregate(xs.genericBuilder[A].result.asInstanceOf[CC[A]])(merge, mergeAll)
+  }
+}
+*/
+
+trait SorterLow {
+  implicit def SeqSorter[CC[X] <: scala.collection.Seq[X]]: Sorter[CC] = new Sorter[CC] {
+    override def sort[A:Ordering](xs: CC[A]): CC[A] =
+      xs.sorted(implicitly[Ordering[A]]).asInstanceOf[CC[A]]
   }
 }
 
