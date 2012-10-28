@@ -19,3 +19,5 @@ Statistics
 The type class `Statistics` provides `arithmeticMean`, `geometricMean`, `harmonicMean`, `median` and
 `quadraticMean` as well as their `*By` variants.
 
+[![endorse](http://api.coderwall.com/wookietreiber/endorsecount.png)](http://coderwall.com/wookietreiber)
+
