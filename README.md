@@ -1,4 +1,4 @@
-Scala Extras
+Scala Extras [![endorse](http://api.coderwall.com/wookietreiber/endorsecount.png)](http://coderwall.com/wookietreiber)
 ============
 
 Provides type class based sort and shuffle for Scala as well as statistics functions.
@@ -18,6 +18,4 @@ Statistics
 
 The type class `Statistics` provides `arithmeticMean`, `geometricMean`, `harmonicMean`, `median` and
 `quadraticMean` as well as their `*By` variants.
-
-[![endorse](http://api.coderwall.com/wookietreiber/endorsecount.png)](http://coderwall.com/wookietreiber)
 
