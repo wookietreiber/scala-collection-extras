@@ -1,11 +1,11 @@
 
 name := "scala-extras"
 
-organization := "com.github.scala-extras"
+organization := "com.github.wookietreiber.scala-extras"
 
 version := "0.1.0-SNAPSHOT"
 
-scalaVersion := "2.10.0-RC1"
+scalaVersion := "2.10.0"
 
 initialCommands in (Compile, consoleQuick) <<= initialCommands in Compile
 
